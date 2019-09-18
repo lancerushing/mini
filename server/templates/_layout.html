@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>{{ block "title" . }}MINI{{ end }}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+
+    <style>
+        body {
+            background-color: rgba(86, 136, 176, 0.96);
+            color: #1e1f26;
+            font-size:1.2rem;
+        }
+
+        .mini-main {
+            background-color: #ffffff;
+            min-height: 600px;
+        }
+    </style>
+
+</head>
+
+<body class="p-sm-4 p-2">
+
+<div class="mini-main rounded pt-2 pt-sm-4">
+    <div class="container">
+        <div class="row">
+            <div class="
+            offset-sm-2 col-sm-8
+            offset-md-1 col-md-10
+            rounded
+        ">
+                {{ block "main" . }}default main{{ end }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="
+            offset-sm-2 col-sm-8
+            offset-md-1 col-md-10
+            rounded
+        ">
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html></html>

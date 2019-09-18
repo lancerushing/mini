@@ -1,0 +1,45 @@
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"os"
+
+	"github.com/gorilla/csrf"
+	"github.com/spf13/viper"
+
+	"github.com/lancerushing/mini/server"
+)
+
+func main() {
+	if err := run(); err != nil {
+		_, _ = fmt.Fprint(os.Stderr, "Run Error: %s\n", err)
+		os.Exit(1)
+	}
+}
+
+func run() error {
+
+	viper.SetConfigName("mini")
+	viper.SetConfigType("yaml")
+	viper.AddConfigPath(".")
+	err := viper.ReadInConfig()
+	if err != nil {
+		return err
+	}
+
+	var config server.Config
+	err = viper.Unmarshal(&config)
+	if err != nil {
+		return err
+	}
+
+	s, err := server.NewServer(&config)
+	if err != nil {
+		return err
+	}
+
+	csrf := csrf.Protect([]byte("01234567890123456789012345678912"), csrf.Secure(false), csrf.Path("/"))
+	return http.ListenAndServe(":4001", csrf(s.GetHandler()))
+
+}

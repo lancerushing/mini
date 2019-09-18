@@ -1,0 +1,15 @@
+{{define "title"}}User Details{{end}}
+
+{{- define "main" -}}
+
+    <h1>User Details</h1>
+
+        <div>Name: {{ .name }}</div>
+        <div>Email: {{ .email }}</div>
+
+    <form action="./logout/" method="post" class="mt-3">
+        {{ .csrfField }}
+        <button type="submit" class="btn btn-secondary"> <i class="fa fa-sign-out"></i> Logout</button>
+    </form>
+
+{{ end }}

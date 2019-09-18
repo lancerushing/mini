@@ -1,0 +1,6 @@
+
+PgHost: "localhost"
+PgPort: 5432
+PgDb: "mini"
+PgUsername: "mini_app"
+PgPassword: "mini_app"
