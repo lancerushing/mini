@@ -24,6 +24,19 @@ Then open your browser to http://localhost:4000
 * Install gin `$ go get github.com/codegangsta/gin`
 
 
-## To Review
+## Todo
 
-* configs? env?
+* How to handle configs? yaml,env,build flags,...,???
+  * Eventually the app will need ~10 config vars
+    * 5 for DB connection
+    * 1 for send gride
+    * 4 for the secure cookie inputs
+    * 1 for schema://domain_name:port
+* How to handle logging?
+  * logrus
+  * chi mux logging middleware
+* Deploying?
+  * Do we bundle templates into the binary?
+  * deploy to /opt or /usr/local/{app} ?
+  * separate config file in /etc ? or shove all ENV vars into .service
+  
