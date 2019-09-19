@@ -14,7 +14,7 @@ func (s *server) handleLoginSubmit() http.HandlerFunc {
 	getByEmail := func(email string) (*UserDto, error) {
 		result := []UserDto{}
 
-		err := s.db.Select(&result, "SELECT uuid, email, password FROM users WHERE Email = $1 ", email)
+		err := s.db.Select(&result, "SELECT uuid, email, password FROM users WHERE email = $1", email)
 		if err != nil {
 			return nil, err
 		}

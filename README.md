@@ -6,6 +6,10 @@ A small web application used for POC and code review.
 
 ```bash
 make create-db  # first time only
+
+# optional for dev, if you want email to work
+export SENDGRID_API_KEY="Your-key-here" 
+
 make dev
 ```
 

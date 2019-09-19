@@ -14,12 +14,13 @@ var saltBytes = 16
 var timeBytes = 15
 var sumBytes = sha512.Size
 
-var shaSecret = []byte("secret")
+// @todo how to configure? ENV? "Config" struct?
+var shaSecret = []byte("need-to-configure-secret")
 
 func computeSum(salt []byte, expires []byte, message []byte) ([]byte, error) {
 	// verify input
 	if len(salt) != saltBytes {
-		return nil, errors.New("Salt is unexpected length")
+		return nil, errors.New("salt is unexpected length")
 	}
 
 	// verify input
@@ -50,7 +51,7 @@ func tokenExtractMessage(token []byte) ([]byte, error) {
 		return nil, err
 	}
 	if !hmac.Equal(extractedSum, computedSum) {
-		return nil, errors.New("Token is invalid")
+		return nil, errors.New("token is invalid")
 	}
 
 	// verify  expiration
@@ -61,11 +62,10 @@ func tokenExtractMessage(token []byte) ([]byte, error) {
 	}
 
 	if time.Now().After(expires) {
-		return nil, errors.New("Token is expired.")
+		return nil, errors.New("token is expired")
 	}
 
 	return extractedMessage, nil
-
 }
 
 func tokenCreate(message []byte) ([]byte, error) {

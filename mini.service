@@ -1,0 +1,14 @@
+[Unit]
+Description=mini go http app
+After=network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5s
+Environment="STAGE=production"
+WorkingDirectory=/opt/mini/bin
+ExecStart=/opt/mini/bin/mini
+
+[Install]
+WantedBy=multi-user.target

@@ -3,6 +3,7 @@ package server
 import (
 	"html/template"
 	"log"
+	"net/http"
 
 	"github.com/go-chi/chi"
 	"github.com/jmoiron/sqlx"
@@ -30,10 +31,12 @@ func NewServer(config *Config) (*server, error) {
 
 	s.db = connect(config)
 	s.layout = template.Must(template.ParseFiles("server/templates/_layout.html"))
-	s.routes()
 
-	s.loginAuth = NewAuth("auth", "B6n6VjPbZNSw46f3yGfkCwhq", "qeZuRRCwXZqA7Z7eF9xVxbwF")
-	s.pwResetAuth = NewAuth("auth-pw", "6bEAbq4camCsdbwANRT9pRut", "jZxrxNsSt6bDfRkTen62CCk5")
+	// @todo Make the keys configurable
+	s.loginAuth = NewAuth("auth", "this-is-a-test-key-please-fix", "this-is-a-test-key-please-fix")
+	s.pwResetAuth = NewAuth("auth-pw", "this-is-a-test-key-please-fix", "this-is-a-test-key-please-fix")
+
+	s.routes()
 
 	return s, nil
 }
@@ -49,4 +52,8 @@ func (s *server) mustSetupTemplate(fileName string) *template.Template {
 
 func (s *server) GetHandler() chi.Router {
 	return s.router
+}
+
+func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	s.GetHandler().ServeHTTP(w, r)
 }

@@ -44,7 +44,7 @@ func (s *server) handleForgotPasswordSubmit() http.HandlerFunc {
 		}
 
 		data := map[string]interface{}{
-			"host":  "http://localhost:4000",
+			"host":  "http://localhost:4000", // @todo this needs to be configurable
 			"token": base64.RawURLEncoding.EncodeToString(token),
 		}
 

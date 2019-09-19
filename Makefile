@@ -36,6 +36,12 @@ dev:
 	gin  --port 4000 --appPort 4001 --immediate --build . --buildArgs "-v" --all run
 
 ########################################
+.PHONY: test
+test:
+	go test -race ./...
+
+
+########################################
 .PHONY: fmt
 fmt:
 	go fmt *.go

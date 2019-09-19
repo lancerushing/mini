@@ -13,13 +13,14 @@ import (
 
 func main() {
 	if err := run(); err != nil {
-		_, _ = fmt.Fprint(os.Stderr, "Run Error: %s\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "Run Error: %s\n", err)
 		os.Exit(1)
 	}
 }
 
 func run() error {
 
+	// @todo How to handle configs?  Yaml? ENV??
 	viper.SetConfigName("mini")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
@@ -39,7 +40,8 @@ func run() error {
 		return err
 	}
 
-	csrf := csrf.Protect([]byte("01234567890123456789012345678912"), csrf.Secure(false), csrf.Path("/"))
-	return http.ListenAndServe(":4001", csrf(s.GetHandler()))
+	// @todo Make the keys configurable
+	CSRF := csrf.Protect([]byte("01234567890123456789012345678912"), csrf.Secure(false), csrf.Path("/"))
+	return http.ListenAndServe(":4001", CSRF(s.GetHandler()))
 
 }
