@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -33,22 +32,7 @@ func (s *Server) handleSignupSubmit() http.HandlerFunc {
 
 	tplSuccess := s.mustSetupTemplate("server/templates/signupSuccess.html")
 
-	getByEmail := func(email string) *userDto {
-		result := userDto{}
-
-		err := s.db.Get(&result, "SELECT uuid, name, email, password FROM users WHERE email = $1", email)
-		if err != nil {
-			fmt.Println(err.Error())
-			return nil
-		}
-
-		fmt.Printf("%#v\n", email)
-		fmt.Printf("%#v\n", result)
-
-		return &result
-	}
-
-	saveUser := func(userDto *userDto) error {
+	saveUser := func(userDto *UserDto) error {
 
 		sql := `INSERT INTO users (uuid, name, email, password) VALUES (:uuid, :name, :email, :password)`
 
@@ -57,7 +41,7 @@ func (s *Server) handleSignupSubmit() http.HandlerFunc {
 		return err
 	}
 
-	createUser := func(name string, email string, password string) (*userDto, error) {
+	createUser := func(name string, email string, password string) (*UserDto, error) {
 		if len(name) == 0 {
 			return nil, errors.Errorf("Name is empty")
 		}
@@ -68,19 +52,18 @@ func (s *Server) handleSignupSubmit() http.HandlerFunc {
 			return nil, errors.Errorf("Password is empty")
 		}
 
-		existingUser := getByEmail(email)
-		fmt.Printf("%#v\n", existingUser)
+		existingUser := s.getByEmail(email)
 		if existingUser != nil {
 			return nil, errors.Errorf("Email already taken.")
 		}
 
 		bcryptBytes, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 
-		user := &userDto{
-			uuid:     uuid.New().String(),
-			name:     name,
-			email:    email,
-			password: string(bcryptBytes),
+		user := &UserDto{
+			UUID:     uuid.New().String(),
+			Name:     name,
+			Email:    email,
+			Password: string(bcryptBytes),
 		}
 
 		err := saveUser(user)
@@ -112,8 +95,8 @@ func (s *Server) handleSignupSubmit() http.HandlerFunc {
 
 		data := map[string]interface{}{
 			csrf.TemplateTag: csrf.TemplateField(r),
-			"name":           userDto.name,
-			"email":          userDto.email,
+			"name":           userDto.Name,
+			"email":          userDto.Email,
 		}
 
 		err = tplSuccess.Execute(w, data)

@@ -52,6 +52,12 @@ lint:
 	golint -set_exit_status ./...
 
 ########################################
+.PHONY: check
+check: tidy fmt lint test
+	# slow check
+	golangci-lint run --enable-all
+
+########################################
 .PHONY: create-db
 create-db:
 	sudo -u postgres psql postgres -c "CREATE DATABASE mini;"

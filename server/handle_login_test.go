@@ -11,6 +11,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jmoiron/sqlx"
 	"github.com/matryer/is"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -96,13 +97,18 @@ func TestHandleLoginSubmit_BadInput(t *testing.T) {
 
 	actualBody := w.Body.String()
 
-	check.True(strings.Contains(actualBody, "Email not found"))
+	ok := strings.Contains(actualBody, "Email not found")
+	if !ok {
+		t.Log(actualBody)
+	}
+	check.True(ok)
 
 }
 
 func setupWithMock(t *testing.T) (*Server, sqlmock.Sqlmock) {
 	testSrv := Server{}
 
+	testSrv.logger, _ = zap.NewDevelopment()
 	testSrv.layout = template.Must(template.New("test_layout").Parse(`{{ block "main" . }}test layout main{{ end }}s`))
 	testSrv.routes()
 	testSrv.loginAuth = newAuth("test-auth", "abcdefghijklmnopqrstuvwx", "abcdefghijklmnopqrstuvwx")

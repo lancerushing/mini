@@ -3,19 +3,19 @@ package server
 import (
 	"bytes"
 	"crypto/hmac"
+	"crypto/rand"
 	"crypto/sha512"
-	"math/rand"
 	"time"
 
 	"github.com/pkg/errors"
 )
 
-var saltBytes = 16
-var timeBytes = 15
-var sumBytes = sha512.Size
-
-// @todo how to configure? ENV? "Config" struct?
-var shaSecret = []byte("need-to-configure-secret")
+const (
+	saltBytes = 16
+	timeBytes = 15
+	sumBytes  = sha512.Size
+	shaSecret = "need-to-configure-secret" // @todo how to configure? ENV? "Config" struct?
+)
 
 func computeSum(salt []byte, expires []byte, message []byte) ([]byte, error) {
 	// verify input
@@ -28,10 +28,10 @@ func computeSum(salt []byte, expires []byte, message []byte) ([]byte, error) {
 		return nil, errors.New("expires is unexpected length")
 	}
 
-	h := hmac.New(sha512.New, shaSecret)
-	h.Write(salt)
-	h.Write(expires)
-	h.Write(message)
+	h := hmac.New(sha512.New, []byte(shaSecret))
+	_, _ = h.Write(salt)
+	_, _ = h.Write(expires)
+	_, _ = h.Write(message)
 
 	return h.Sum(nil), nil
 }

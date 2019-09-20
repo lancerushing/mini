@@ -22,8 +22,8 @@ func (s *Server) handleUserDetails() http.HandlerFunc {
 
 		data := map[string]interface{}{
 			csrf.TemplateTag: csrf.TemplateField(r),
-			"name":           user.name,
-			"email":          user.email,
+			"name":           user.Name,
+			"email":          user.Email,
 		}
 
 		err = tpl.Execute(w, data)

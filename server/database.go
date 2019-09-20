@@ -5,6 +5,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq" // import DB into namesapce
+	"go.uber.org/zap"
 )
 
 func connect(config *Config) *sqlx.DB {
@@ -18,8 +19,8 @@ func connect(config *Config) *sqlx.DB {
 	return db
 }
 
-func (s Server) getUser(uuid string) (*userDto, error) {
-	result := userDto{}
+func (s Server) getUser(uuid string) (*UserDto, error) {
+	result := UserDto{}
 
 	err := s.db.Get(&result, "SELECT uuid, name, email FROM users WHERE uuid = $1 ", uuid)
 	if err != nil {
@@ -30,21 +31,26 @@ func (s Server) getUser(uuid string) (*userDto, error) {
 
 }
 
-func (s Server) getByEmail(email string) *userDto {
-	result := userDto{}
+func (s Server) getByEmail(email string) *UserDto {
+	result := []UserDto{}
 
-	err := s.db.Get(&result, "SELECT uuid, name, email, password FROM users WHERE email = $1", email)
+	err := s.db.Select(&result, "SELECT uuid, email, password FROM users WHERE email = $1", email)
 	if err != nil {
-		fmt.Println(err.Error())
+		s.logger.Error("Bad Query", zap.Error(err))
 		return nil
 	}
 
-	return &result
+	if len(result) != 1 {
+		return nil
+	}
+	return &result[0]
+
 }
 
-type userDto struct {
-	uuid     string
-	email    string
-	name     string
-	password string
+// UserDto holds info from DB
+type UserDto struct {
+	UUID     string
+	Email    string
+	Name     string
+	Password string
 }

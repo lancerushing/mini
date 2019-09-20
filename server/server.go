@@ -38,7 +38,7 @@ func NewServer(config *Config) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer s.logger.Sync()
+	defer s.logger.Sync() //nolint
 
 	s.db = connect(config)
 	s.layout = template.Must(template.ParseFiles("server/templates/_layout.html"))

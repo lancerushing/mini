@@ -27,7 +27,7 @@ func (s *Server) handleForgotPasswordForm() http.HandlerFunc {
 
 }
 
-// ---------------- submit form
+// ################### Submit ###################
 
 func (s *Server) handleForgotPasswordSubmit() http.HandlerFunc {
 	tplSuccess := s.mustSetupTemplate("server/templates/forgotPasswordSuccess.html")
@@ -45,7 +45,7 @@ func (s *Server) handleForgotPasswordSubmit() http.HandlerFunc {
 			return errors.Errorf("User Not Found.")
 		}
 
-		uuidBinary, err := uuid.Must(uuid.Parse(existingUser.uuid)).MarshalBinary()
+		uuidBinary, err := uuid.Must(uuid.Parse(existingUser.UUID)).MarshalBinary()
 		if err != nil {
 			return err
 		}
@@ -77,7 +77,7 @@ func (s *Server) handleForgotPasswordSubmit() http.HandlerFunc {
 		fmt.Println(textMsg)
 		fmt.Println(htmlMsg)
 
-		err = sendEmail(s.logger, existingUser.name, existingUser.email, textMsg, htmlMsg)
+		err = sendEmail(s.logger, existingUser.Name, existingUser.Email, textMsg, htmlMsg)
 		if err != nil {
 			return err
 		}

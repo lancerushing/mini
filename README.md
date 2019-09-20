@@ -23,8 +23,8 @@ Then open your browser to http://localhost:4000
 * Install Make ( apt install make) 
 * Install go ( https://golang.org/doc/install ) 
 * postgres ( https://www.postgresql.org/download/linux/debian )
-* Install gin `$ go get github.com/codegangsta/gin`
-
+* gin `$ go get github.com/codegangsta/gin`
+* ci-lint `go get -u github.com/golangci/golangci-lint/cmd/golangci-lint`
 
 ## Todo
 
