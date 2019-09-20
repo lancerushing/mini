@@ -10,6 +10,25 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func (s *Server) handleSignupForm() http.HandlerFunc {
+
+	tpl := s.mustSetupTemplate("server/templates/signupForm.html")
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		data := map[string]interface{}{
+			csrf.TemplateTag: csrf.TemplateField(r),
+		}
+
+		err := tpl.Execute(w, data)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+}
+
+// ################### Submit ###################
+
 func (s *Server) handleSignupSubmit() http.HandlerFunc {
 
 	tplSuccess := s.mustSetupTemplate("server/templates/signupSuccess.html")
@@ -102,7 +121,5 @@ func (s *Server) handleSignupSubmit() http.HandlerFunc {
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-
 	}
-
 }

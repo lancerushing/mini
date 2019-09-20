@@ -8,8 +8,26 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
+	"github.com/gorilla/csrf"
 	"github.com/pkg/errors"
 )
+
+func (s *Server) handleForgotPasswordForm() http.HandlerFunc {
+
+	tpl := s.mustSetupTemplate("server/templates/forgotPasswordForm.html")
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		data := map[string]interface{}{
+			csrf.TemplateTag: csrf.TemplateField(r),
+		}
+		_ = tpl.Execute(w, data)
+
+	}
+
+}
+
+// ---------------- submit form
 
 func (s *Server) handleForgotPasswordSubmit() http.HandlerFunc {
 	tplSuccess := s.mustSetupTemplate("server/templates/forgotPasswordSuccess.html")

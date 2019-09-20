@@ -9,6 +9,26 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func (s *Server) handleLoginForm() http.HandlerFunc {
+
+	tpl := s.mustSetupTemplate("server/templates/loginForm.html")
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		data := map[string]interface{}{
+			csrf.TemplateTag: csrf.TemplateField(r),
+		}
+
+		err := tpl.Execute(w, data)
+
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+
+}
+
+// ################### Submit ###################
+
 func (s *Server) handleLoginSubmit() http.HandlerFunc {
 
 	getByEmail := func(email string) (*userDto, error) {
@@ -20,7 +40,7 @@ func (s *Server) handleLoginSubmit() http.HandlerFunc {
 		}
 
 		if len(result) != 1 {
-			return nil, errors.New("Email not found")
+			return nil, errors.New("email not found")
 		}
 		return &result[0], nil
 
@@ -32,7 +52,7 @@ func (s *Server) handleLoginSubmit() http.HandlerFunc {
 
 		err = r.ParseForm()
 		if err != nil {
-			http.Error(w, "Unable to parse: "+err.Error(), http.StatusBadRequest)
+			http.Error(w, "unable to parse: "+err.Error(), http.StatusBadRequest)
 			return
 		}
 
@@ -89,9 +109,23 @@ func (s *Server) handleLoginSubmit() http.HandlerFunc {
 			return
 		}
 
-		s.loginAuth.setCookie(w, user.uuid)
+		err = s.loginAuth.setCookie(w, user.uuid)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 		http.Redirect(w, r, "/user/", http.StatusSeeOther)
 
+	}
+
+}
+
+// ################### Logout ###################
+
+func (s *Server) handleLogout() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		s.loginAuth.deleteCooke(w)
+		http.Redirect(w, r, "../", http.StatusSeeOther)
 	}
 
 }

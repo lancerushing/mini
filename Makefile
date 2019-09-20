@@ -44,14 +44,12 @@ test:
 ########################################
 .PHONY: fmt
 fmt:
-	go fmt *.go
-	go fmt ./server/
+	gofmt -s -l -w .
 
 ########################################
 .PHONY: lint
 lint:
-	golint *.go
-	golint ./server/
+	golint -set_exit_status ./...
 
 ########################################
 .PHONY: create-db

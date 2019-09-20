@@ -14,6 +14,23 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+func TestHandleLoginForm(t *testing.T) {
+	srv := setup(t)
+
+	check := is.New(t)
+
+	req, err := http.NewRequest("GET", "/user/login/", nil)
+	check.NoErr(err)
+
+	w := httptest.NewRecorder()
+
+	srv.ServeHTTP(w, req)
+	check.Equal(w.Code, http.StatusOK)
+
+	check.True(strings.Contains(w.Body.String(), "Login"))
+
+}
+
 func TestHandleLoginSubmit_NoInput(t *testing.T) {
 	srv := setup(t)
 
@@ -88,7 +105,7 @@ func setupWithMock(t *testing.T) (*Server, sqlmock.Sqlmock) {
 
 	testSrv.layout = template.Must(template.New("test_layout").Parse(`{{ block "main" . }}test layout main{{ end }}s`))
 	testSrv.routes()
-	testSrv.loginAuth = NewAuth("test-auth", "abcdefghijklmnopqrstuvwx", "abcdefghijklmnopqrstuvwx")
+	testSrv.loginAuth = newAuth("test-auth", "abcdefghijklmnopqrstuvwx", "abcdefghijklmnopqrstuvwx")
 
 	db, mock, err := sqlmock.New()
 	if err != nil {
