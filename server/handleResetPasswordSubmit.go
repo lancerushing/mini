@@ -7,7 +7,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (s *server) handleRestPasswordSubmit() http.HandlerFunc {
+func (s *Server) handleRestPasswordSubmit() http.HandlerFunc {
 
 	tplFail := s.mustSetupTemplate("server/templates/resetPasswordForm.html")
 	tplSuccess := s.mustSetupTemplate("server/templates/resetPasswordSuccess.html")
@@ -36,13 +36,13 @@ func (s *server) handleRestPasswordSubmit() http.HandlerFunc {
 			return
 		}
 
-		userUuid := r.Context().Value(s.pwResetAuth.ctxKey).(string)
+		userUUID := r.Context().Value(s.pwResetAuth.ctxKey).(string)
 		bcryptBytes, _ := bcrypt.GenerateFromPassword([]byte(pass1), bcrypt.MinCost)
 
 		sql := "UPDATE users SET  password = :password WHERE uuid = :uuid"
 		dbData := map[string]interface{}{
 			"password": string(bcryptBytes),
-			"uuid":     userUuid,
+			"uuid":     userUUID,
 		}
 
 		_, err = s.db.NamedExec(sql, dbData)

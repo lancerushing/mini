@@ -6,7 +6,7 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-func (s *server) handleSignupForm() http.HandlerFunc {
+func (s *Server) handleSignupForm() http.HandlerFunc {
 
 	tpl := s.mustSetupTemplate("server/templates/signupForm.html")
 

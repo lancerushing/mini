@@ -10,8 +10,8 @@ tidy:
 
 ########################################
 .PHONY: build
-build: tidy
-	go build -race-ldflags "-s -w" -v .
+build: tidy fmt lint
+	go build -race -ldflags "-s -w" -v .
 
 ########################################
 .PHONY: package
@@ -46,6 +46,12 @@ test:
 fmt:
 	go fmt *.go
 	go fmt ./server/
+
+########################################
+.PHONY: lint
+lint:
+	golint *.go
+	golint ./server/
 
 ########################################
 .PHONY: create-db

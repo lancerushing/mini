@@ -8,10 +8,9 @@ import (
 )
 
 var _testOneTime sync.Once
-var _testSrv server
+var _testSrv Server
 
-
-func setup(t *testing.T) *server {
+func setup(t *testing.T) *Server {
 	_testOneTime.Do(func() {
 
 		// @todo is there a better way?
@@ -19,12 +18,11 @@ func setup(t *testing.T) *server {
 		// templates parsing uses paths based on the root dir
 		_ = os.Chdir("..")
 
-
 		// we will init the server once to help with speed
 		// because the route handlers parse their templates
 		// during startup, we have ~1 second startup
 		// when server.routes() is called
-		_testSrv = server{}
+		_testSrv = Server{}
 
 		_testSrv.layout = template.Must(template.New("test_layout").Parse(`{{ block "main" . }}test layout main{{ end }}s`))
 		_testSrv.routes()

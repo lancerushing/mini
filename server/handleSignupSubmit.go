@@ -10,19 +10,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type UserDto struct {
-	Uuid     string
-	Email    string
-	Name     string
-	Password string
-}
-
-func (s *server) handleSignupSubmit() http.HandlerFunc {
+func (s *Server) handleSignupSubmit() http.HandlerFunc {
 
 	tplSuccess := s.mustSetupTemplate("server/templates/signupSuccess.html")
 
-	getByEmail := func(email string) *UserDto {
-		result := UserDto{}
+	getByEmail := func(email string) *userDto {
+		result := userDto{}
 
 		err := s.db.Get(&result, "SELECT uuid, name, email, password FROM users WHERE email = $1", email)
 		if err != nil {
@@ -36,7 +29,7 @@ func (s *server) handleSignupSubmit() http.HandlerFunc {
 		return &result
 	}
 
-	saveUser := func(userDto *UserDto) error {
+	saveUser := func(userDto *userDto) error {
 
 		sql := `INSERT INTO users (uuid, name, email, password) VALUES (:uuid, :name, :email, :password)`
 
@@ -45,7 +38,7 @@ func (s *server) handleSignupSubmit() http.HandlerFunc {
 		return err
 	}
 
-	createUser := func(name string, email string, password string) (*UserDto, error) {
+	createUser := func(name string, email string, password string) (*userDto, error) {
 		if len(name) == 0 {
 			return nil, errors.Errorf("Name is empty")
 		}
@@ -64,11 +57,11 @@ func (s *server) handleSignupSubmit() http.HandlerFunc {
 
 		bcryptBytes, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
 
-		user := &UserDto{
-			Uuid:     uuid.New().String(),
-			Name:     name,
-			Email:    email,
-			Password: string(bcryptBytes),
+		user := &userDto{
+			uuid:     uuid.New().String(),
+			name:     name,
+			email:    email,
+			password: string(bcryptBytes),
 		}
 
 		err := saveUser(user)
@@ -100,8 +93,8 @@ func (s *server) handleSignupSubmit() http.HandlerFunc {
 
 		data := map[string]interface{}{
 			csrf.TemplateTag: csrf.TemplateField(r),
-			"name":           userDto.Name,
-			"email":          userDto.Email,
+			"name":           userDto.name,
+			"email":          userDto.email,
 		}
 
 		err = tplSuccess.Execute(w, data)

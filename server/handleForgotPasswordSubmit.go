@@ -7,20 +7,14 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/gbrlsnchs/jwt/v3"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 )
 
-type CustomPayload struct {
-	jwt.Payload
-	Uuid string `json:"Uuid,omitempty"`
-}
-
-func (s *server) handleForgotPasswordSubmit() http.HandlerFunc {
+func (s *Server) handleForgotPasswordSubmit() http.HandlerFunc {
 	tplSuccess := s.mustSetupTemplate("server/templates/forgotPasswordSuccess.html")
 
-	tplEmailHtml := template.Must(template.ParseFiles("server/templates/forgotPasswordEmail.html"))
+	tplEmailHTML := template.Must(template.ParseFiles("server/templates/forgotPasswordEmail.html"))
 	tplEmailText := template.Must(template.ParseFiles("server/templates/forgotPasswordEmail.text"))
 
 	sendResetLink := func(email string) error {
@@ -33,7 +27,7 @@ func (s *server) handleForgotPasswordSubmit() http.HandlerFunc {
 			return errors.Errorf("User Not Found.")
 		}
 
-		uuidBinary, err := uuid.Must(uuid.Parse(existingUser.Uuid)).MarshalBinary()
+		uuidBinary, err := uuid.Must(uuid.Parse(existingUser.uuid)).MarshalBinary()
 		if err != nil {
 			return err
 		}
@@ -56,7 +50,7 @@ func (s *server) handleForgotPasswordSubmit() http.HandlerFunc {
 		textMsg := buf.String()
 
 		buf.Reset()
-		err = tplEmailHtml.Execute(buf, data)
+		err = tplEmailHTML.Execute(buf, data)
 		if err != nil {
 			return err
 		}
@@ -64,10 +58,11 @@ func (s *server) handleForgotPasswordSubmit() http.HandlerFunc {
 
 		fmt.Println(textMsg)
 		fmt.Println(htmlMsg)
-		//err = sendEmail(existingUser.Name, existingUser.Email, textMsg, htmlMsg)
-		//if err != nil {
-		//	return err
-		//}
+
+		err = sendEmail(s.logger, existingUser.name, existingUser.email, textMsg, htmlMsg)
+		if err != nil {
+			return err
+		}
 
 		return nil
 

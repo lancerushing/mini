@@ -8,16 +8,18 @@ import (
 	"github.com/gorilla/securecookie"
 )
 
+type key int
+
 type auth struct {
 	cookieName string
-	ctxKey     string
+	ctxKey     key
 	sc         *securecookie.SecureCookie
 }
 
-func NewAuth(name string, cookieHashKey string, cookieEncryptKey string) *auth {
+func newAuth(name string, cookieHashKey string, cookieEncryptKey string) *auth {
 	a := &auth{}
 	a.cookieName = name
-	a.ctxKey = name
+	a.ctxKey = 0
 	a.sc = securecookie.New([]byte(cookieHashKey), []byte(cookieEncryptKey))
 
 	return a

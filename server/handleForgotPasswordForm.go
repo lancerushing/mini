@@ -6,7 +6,7 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-func (s *server) handleForgotPasswordForm() http.HandlerFunc {
+func (s *Server) handleForgotPasswordForm() http.HandlerFunc {
 
 	tpl := s.mustSetupTemplate("server/templates/forgotPasswordForm.html")
 

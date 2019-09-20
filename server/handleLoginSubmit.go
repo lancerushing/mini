@@ -9,10 +9,10 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (s *server) handleLoginSubmit() http.HandlerFunc {
+func (s *Server) handleLoginSubmit() http.HandlerFunc {
 
-	getByEmail := func(email string) (*UserDto, error) {
-		result := []UserDto{}
+	getByEmail := func(email string) (*userDto, error) {
+		result := []userDto{}
 
 		err := s.db.Select(&result, "SELECT uuid, email, password FROM users WHERE email = $1", email)
 		if err != nil {
@@ -27,7 +27,7 @@ func (s *server) handleLoginSubmit() http.HandlerFunc {
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		var user *UserDto
+		var user *userDto
 		var err error
 
 		err = r.ParseForm()
@@ -56,7 +56,7 @@ func (s *server) handleLoginSubmit() http.HandlerFunc {
 			}
 
 			if userMatch != nil {
-				err = bcrypt.CompareHashAndPassword([]byte(userMatch.Password), []byte(password))
+				err = bcrypt.CompareHashAndPassword([]byte(userMatch.password), []byte(password))
 				if err != nil {
 					fieldErrors["passwordError"] = "Bad Password"
 				} else {
@@ -89,7 +89,7 @@ func (s *server) handleLoginSubmit() http.HandlerFunc {
 			return
 		}
 
-		s.loginAuth.setCookie(w, user.Uuid)
+		s.loginAuth.setCookie(w, user.uuid)
 		http.Redirect(w, r, "/user/", http.StatusSeeOther)
 
 	}

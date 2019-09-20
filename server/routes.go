@@ -5,7 +5,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 )
 
-func (s *server) routes() {
+func (s *Server) routes() {
 	s.router = chi.NewRouter()
 
 	// middleware
@@ -20,7 +20,7 @@ func (s *server) routes() {
 	s.router.Group(s.resetPasswordRoutes)
 }
 
-func (s *server) addAnonRoutes() {
+func (s *Server) addAnonRoutes() {
 	mux := s.router
 
 	mux.Get("/", s.handleIndex())
@@ -37,7 +37,7 @@ func (s *server) addAnonRoutes() {
 	mux.Get("/user/reset-password/verify/", s.handleResetPasswordVerify())
 }
 
-func (s *server) resetPasswordRoutes(mux chi.Router) {
+func (s *Server) resetPasswordRoutes(mux chi.Router) {
 
 	mux.Use(s.pwResetAuth.middleware)
 
@@ -46,7 +46,7 @@ func (s *server) resetPasswordRoutes(mux chi.Router) {
 
 }
 
-func (s *server) authRoutes(mux chi.Router) {
+func (s *Server) authRoutes(mux chi.Router) {
 
 	mux.Use(s.loginAuth.middleware)
 

@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/lancerushing/mini)](https://goreportcard.com/report/lancerushing/mini)
+
 # "Mini" web application
 
 A small web application used for POC and code review.

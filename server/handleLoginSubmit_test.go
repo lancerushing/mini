@@ -83,13 +83,12 @@ func TestHandleLoginSubmit_BadInput(t *testing.T) {
 
 }
 
-func setupWithMock(t *testing.T) (*server, sqlmock.Sqlmock) {
-	testSrv := server{}
+func setupWithMock(t *testing.T) (*Server, sqlmock.Sqlmock) {
+	testSrv := Server{}
 
 	testSrv.layout = template.Must(template.New("test_layout").Parse(`{{ block "main" . }}test layout main{{ end }}s`))
 	testSrv.routes()
 	testSrv.loginAuth = NewAuth("test-auth", "abcdefghijklmnopqrstuvwx", "abcdefghijklmnopqrstuvwx")
-
 
 	db, mock, err := sqlmock.New()
 	if err != nil {
@@ -98,7 +97,6 @@ func setupWithMock(t *testing.T) (*server, sqlmock.Sqlmock) {
 	//defer db.Close()
 
 	testSrv.db = sqlx.NewDb(db, "postgres")
-
 
 	return &testSrv, mock
 }
@@ -111,7 +109,6 @@ func TestHandleLoginSubmit_BadPasswordInput(t *testing.T) {
 	mock.ExpectQuery("SELECT uuid, email, password FROM users WHERE email = (.+)").
 		WithArgs("known@email.com").
 		WillReturnRows(sqlmock.NewRows(columns).FromCSVString("fake-uuid,known@email.com,badPassword"))
-
 
 	check := is.New(t)
 
@@ -135,7 +132,6 @@ func TestHandleLoginSubmit_BadPasswordInput(t *testing.T) {
 
 }
 
-
 func TestHandleLoginSubmit_GoodInput(t *testing.T) {
 	srv, mock := setupWithMock(t)
 
@@ -144,11 +140,9 @@ func TestHandleLoginSubmit_GoodInput(t *testing.T) {
 	testPassword := "test"
 	bcryptBytes, _ := bcrypt.GenerateFromPassword([]byte(testPassword), bcrypt.MinCost)
 
-
 	mock.ExpectQuery("SELECT uuid, email, password FROM users WHERE email = (.+)").
 		WithArgs("known@email.com").
 		WillReturnRows(sqlmock.NewRows(columns).FromCSVString("fake-uuid,known@email.com," + string(bcryptBytes)))
-
 
 	check := is.New(t)
 
@@ -166,7 +160,7 @@ func TestHandleLoginSubmit_GoodInput(t *testing.T) {
 	srv.ServeHTTP(w, req)
 	check.Equal(w.Code, http.StatusSeeOther)
 
-	actualLocation :=	w.Header().Get("Location")
+	actualLocation := w.Header().Get("Location")
 
 	check.Equal(actualLocation, "/user/")
 

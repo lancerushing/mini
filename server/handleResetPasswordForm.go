@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func (s *server) handleRestPasswordForm() http.HandlerFunc {
+func (s *Server) handleRestPasswordForm() http.HandlerFunc {
 
 	tpl := s.mustSetupTemplate("server/templates/resetPasswordForm.html")
 

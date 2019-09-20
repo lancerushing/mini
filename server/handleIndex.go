@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-func (s *server) handleIndex() http.HandlerFunc {
+func (s *Server) handleIndex() http.HandlerFunc {
 
 	tpl := s.mustSetupTemplate("server/templates/index.html")
 

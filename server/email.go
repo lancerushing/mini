@@ -1,31 +1,30 @@
 package server
 
 import (
-	"fmt"
-	"log"
 	"os"
 
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
+	"go.uber.org/zap"
 )
 
-func sendEmail(name string, address string, plainTextContent string, htmlContent string) error {
+func sendEmail(logger *zap.Logger, name string, address string, plainTextContent string, htmlContent string) error {
 	from := mail.NewEmail("Example User", "test@example.com")
 	subject := "Sending with SendGrid is Fun"
 	to := mail.NewEmail(name, address)
 
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
-	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
+	client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY")) //@todo this is the only os.Getenv()... should we use?
 
 	response, err := client.Send(message)
 	if err != nil {
-		log.Println(err)
+		logger.Error("failed to send", zap.Error(err))
 		return err
-	} else {
-		fmt.Println(response.StatusCode)
-		fmt.Println(response.Body)
-		fmt.Println(response.Headers)
 	}
+	logger.Debug("Email Success",
+		zap.Int("Status Code", response.StatusCode),
+		zap.String("Body", response.Body),
+	)
 
 	return nil
 }

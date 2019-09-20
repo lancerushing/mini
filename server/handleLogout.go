@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-func (s *server) handleLogout() http.HandlerFunc {
+func (s *Server) handleLogout() http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		s.loginAuth.deleteCooke(w)

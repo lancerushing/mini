@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
+	_ "github.com/lib/pq" // import DB into namesapce
 )
 
 func connect(config *Config) *sqlx.DB {
@@ -18,8 +18,8 @@ func connect(config *Config) *sqlx.DB {
 	return db
 }
 
-func (s server) getUser(uuid string) (*UserDto, error) {
-	result := UserDto{}
+func (s Server) getUser(uuid string) (*userDto, error) {
+	result := userDto{}
 
 	err := s.db.Get(&result, "SELECT uuid, name, email FROM users WHERE uuid = $1 ", uuid)
 	if err != nil {
@@ -30,8 +30,8 @@ func (s server) getUser(uuid string) (*UserDto, error) {
 
 }
 
-func (s server) getByEmail(email string) *UserDto {
-	result := UserDto{}
+func (s Server) getByEmail(email string) *userDto {
+	result := userDto{}
 
 	err := s.db.Get(&result, "SELECT uuid, name, email, password FROM users WHERE email = $1", email)
 	if err != nil {
@@ -40,4 +40,11 @@ func (s server) getByEmail(email string) *UserDto {
 	}
 
 	return &result
+}
+
+type userDto struct {
+	uuid     string
+	email    string
+	name     string
+	password string
 }

@@ -11,7 +11,7 @@ import (
 
 func TestToken_Good(t *testing.T) {
 
-	t.Parallel();
+	t.Parallel()
 	check := is.New(t)
 
 	testMsg := []byte("Test Message")
@@ -27,7 +27,7 @@ func TestToken_Good(t *testing.T) {
 
 func TestToken_Bad(t *testing.T) {
 
-	t.Parallel();
+	t.Parallel()
 	check := is.New(t)
 
 	testMsg := []byte("Test Message")
@@ -47,7 +47,7 @@ func TestToken_Bad(t *testing.T) {
 
 func TestToken_Expired(t *testing.T) {
 
-	t.Parallel();
+	t.Parallel()
 	check := is.New(t)
 
 	message := []byte("Test Message")

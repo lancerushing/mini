@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (s *server) handleResetPasswordVerify() http.HandlerFunc {
+func (s *Server) handleResetPasswordVerify() http.HandlerFunc {
 
 	tplFail := s.mustSetupTemplate("server/templates/resetPasswordVerifyFail.html")
 
@@ -39,7 +39,7 @@ func (s *server) handleResetPasswordVerify() http.HandlerFunc {
 			return
 		}
 
-		userUuid, err := tokenExtractMessage(tokenBytes)
+		userUUID, err := tokenExtractMessage(tokenBytes)
 		if err != nil {
 			data["errorMsg"] = err.Error()
 			w.WriteHeader(http.StatusBadRequest)
@@ -50,7 +50,7 @@ func (s *server) handleResetPasswordVerify() http.HandlerFunc {
 			return
 		}
 
-		uuidString, err := uuid.FromBytes(userUuid)
+		uuidString, err := uuid.FromBytes(userUUID)
 		if err != nil {
 			data["errorMsg"] = err.Error()
 			w.WriteHeader(http.StatusBadRequest)
