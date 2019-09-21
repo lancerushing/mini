@@ -1,5 +1,7 @@
 [![Go Report Card](https://goreportcard.com/badge/lancerushing/mini)](https://goreportcard.com/report/lancerushing/mini)
 
+[![License MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://img.shields.io/badge/License-MIT-brightgreen.svg)
+
 # "Mini" web application
 
 A small web application used for POC and code review.
