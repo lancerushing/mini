@@ -4,7 +4,19 @@
 
 # "Mini" web application
 
-A small web application used for POC and code review.
+A small web application used for POC and skeleton for new project.
+
+## Features
+
+* New user signup
+* User login
+* Forgot password functionality
+
+## Requirements
+
+* go >1.16
+* postgresql server
+* make (useful)
 
 ## Development
 
