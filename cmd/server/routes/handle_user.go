@@ -1,4 +1,4 @@
-package server
+package routes
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 
 func (s *Server) handleUserDetails() http.HandlerFunc {
 
-	tpl := s.mustSetupTemplate("server/templates/user-details.html")
+	tpl := s.mustSetupTemplate("cmd/server/routes/templates/user-details.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
 

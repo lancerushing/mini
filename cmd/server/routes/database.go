@@ -1,11 +1,12 @@
-package server
+package routes
 
 import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq" // import DB into namesapce
-	"go.uber.org/zap"
+	"github.com/rs/zerolog/log"
+
 )
 
 func connect(config *Config) *sqlx.DB {
@@ -36,7 +37,7 @@ func (s Server) getByEmail(email string) *UserDto {
 
 	err := s.db.Select(&result, "SELECT uuid, email, password FROM users WHERE email = $1", email)
 	if err != nil {
-		s.logger.Error("Bad Query", zap.Error(err))
+		log.Error().Err(err).Msg("Bad Query")
 		return nil
 	}
 

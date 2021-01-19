@@ -1,4 +1,4 @@
-package server
+package routes
 
 import (
 	"encoding/base64"
@@ -11,7 +11,7 @@ import (
 
 func (s *Server) handleRestPasswordForm() http.HandlerFunc {
 
-	tpl := s.mustSetupTemplate("server/templates/resetPasswordForm.html")
+	tpl := s.mustSetupTemplate("cmd/server/routes/templates/resetPasswordForm.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -32,8 +32,8 @@ func (s *Server) handleRestPasswordForm() http.HandlerFunc {
 
 func (s *Server) handleRestPasswordSubmit() http.HandlerFunc {
 
-	tplFail := s.mustSetupTemplate("server/templates/resetPasswordForm.html")
-	tplSuccess := s.mustSetupTemplate("server/templates/resetPasswordSuccess.html")
+	tplFail := s.mustSetupTemplate("cmd/server/routes/templates/resetPasswordForm.html")
+	tplSuccess := s.mustSetupTemplate("cmd/server/routes/templates/resetPasswordSuccess.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -99,7 +99,7 @@ func (s *Server) handleRestPasswordSubmit() http.HandlerFunc {
 
 func (s *Server) handleResetPasswordVerify() http.HandlerFunc {
 
-	tplFail := s.mustSetupTemplate("server/templates/resetPasswordVerifyFail.html")
+	tplFail := s.mustSetupTemplate("cmd/server/routes/templates/resetPasswordVerifyFail.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := map[string]interface{}{}

@@ -1,4 +1,4 @@
-package server
+package routes
 
 import (
 	"html/template"
@@ -11,7 +11,6 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jmoiron/sqlx"
 	"github.com/matryer/is"
-	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -108,7 +107,7 @@ func TestHandleLoginSubmit_BadInput(t *testing.T) {
 func setupWithMock(t *testing.T) (*Server, sqlmock.Sqlmock) {
 	testSrv := Server{}
 
-	testSrv.logger, _ = zap.NewDevelopment()
+
 	testSrv.layout = template.Must(template.New("test_layout").Parse(`{{ block "main" . }}test layout main{{ end }}s`))
 	testSrv.routes()
 	testSrv.loginAuth = newAuth("test-auth", "abcdefghijklmnopqrstuvwx", "abcdefghijklmnopqrstuvwx")

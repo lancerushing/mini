@@ -1,4 +1,4 @@
-package server
+package routes
 
 import (
 	"html/template"
@@ -10,7 +10,7 @@ import (
 
 func (s *Server) handleLoginForm() http.HandlerFunc {
 
-	tpl := s.mustSetupTemplate("server/templates/loginForm.html")
+	tpl := s.mustSetupTemplate("cmd/server/routes/templates/loginForm.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := map[string]interface{}{
@@ -73,7 +73,7 @@ func (s *Server) handleLoginSubmit() http.HandlerFunc {
 
 		if user == nil {
 
-			tpl := s.mustSetupTemplate("server/templates/loginForm.html")
+			tpl := s.mustSetupTemplate("cmd/server/routes/templates/loginForm.html")
 			data := map[string]interface{}{
 				csrf.TemplateTag: csrf.TemplateField(r),
 				"errorMsg":       template.HTML(`<div class="text-danger">Invalid Login</div>`),

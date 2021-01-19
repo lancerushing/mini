@@ -8,7 +8,7 @@ import (
 	"github.com/gorilla/csrf"
 	"github.com/spf13/viper"
 
-	"github.com/lancerushing/mini/server"
+	"github.com/lancerushing/mini/cmd/server/routes"
 )
 
 func main() {
@@ -29,13 +29,13 @@ func run() error {
 		return err
 	}
 
-	var config server.Config
+	var config routes.Config
 	err = viper.Unmarshal(&config)
 	if err != nil {
 		return err
 	}
 
-	s, err := server.NewServer(&config)
+	s, err := routes.NewServer(&config)
 	if err != nil {
 		return err
 	}

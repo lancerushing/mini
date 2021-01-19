@@ -1,4 +1,4 @@
-package server
+package routes
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 
 func (s *Server) handleIndex() http.HandlerFunc {
 
-	tpl := s.mustSetupTemplate("server/templates/index.html")
+	tpl := s.mustSetupTemplate("cmd/server/routes/templates/index.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := tpl.Execute(w, nil)

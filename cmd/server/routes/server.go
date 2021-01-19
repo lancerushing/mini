@@ -1,4 +1,4 @@
-package server
+package routes
 
 import (
 	"html/template"
@@ -7,7 +7,6 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/jmoiron/sqlx"
-	"go.uber.org/zap"
 )
 
 // Config to hold configuration info
@@ -26,22 +25,22 @@ type Server struct {
 	db          *sqlx.DB
 	loginAuth   *auth
 	pwResetAuth *auth
-	logger      *zap.Logger
+
 }
 
-// NewServer builds a new instance of server
+// NewServer builds a new instance of routes
 func NewServer(config *Config) (*Server, error) {
 	var err error
 	s := &Server{}
 
-	s.logger, err = zap.NewProduction()
+
 	if err != nil {
 		return nil, err
 	}
-	defer s.logger.Sync() //nolint
+
 
 	s.db = connect(config)
-	s.layout = template.Must(template.ParseFiles("server/templates/_layout.html"))
+	s.layout = template.Must(template.ParseFiles("cmd/server/routes/templates/_layout.html"))
 
 	// @todo Make the keys configurable
 	s.loginAuth = newAuth("auth", "this-is-a-test-key-please-fix", "this-is-a-test-key-please-fix")

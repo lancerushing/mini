@@ -1,14 +1,14 @@
-package server
+package routes
 
 import (
+	"github.com/rs/zerolog/log"
 	"os"
 
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
-	"go.uber.org/zap"
 )
 
-func sendEmail(logger *zap.Logger, name string, address string, plainTextContent string, htmlContent string) error {
+func sendEmail(name string, address string, plainTextContent string, htmlContent string) error {
 	from := mail.NewEmail("Example User", "test@example.com")
 	subject := "Sending with SendGrid is Fun"
 	to := mail.NewEmail(name, address)
@@ -18,13 +18,10 @@ func sendEmail(logger *zap.Logger, name string, address string, plainTextContent
 
 	response, err := client.Send(message)
 	if err != nil {
-		logger.Error("failed to send", zap.Error(err))
+		log.Error().Err(err).Msg("failed to send")
 		return err
 	}
-	logger.Debug("Email Success",
-		zap.Int("Status Code", response.StatusCode),
-		zap.String("Body", response.Body),
-	)
+	log.Debug().Int("Status Code", response.StatusCode).Str("Body", response.Body).Msg("email success")
 
 	return nil
 }

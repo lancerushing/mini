@@ -1,4 +1,4 @@
-package server
+package routes
 
 import (
 	"bytes"
@@ -14,7 +14,7 @@ import (
 
 func (s *Server) handleForgotPasswordForm() http.HandlerFunc {
 
-	tpl := s.mustSetupTemplate("server/templates/forgotPasswordForm.html")
+	tpl := s.mustSetupTemplate("cmd/server/routes/templates/forgotPasswordForm.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -30,10 +30,10 @@ func (s *Server) handleForgotPasswordForm() http.HandlerFunc {
 // ################### Submit ###################
 
 func (s *Server) handleForgotPasswordSubmit() http.HandlerFunc {
-	tplSuccess := s.mustSetupTemplate("server/templates/forgotPasswordSuccess.html")
+	tplSuccess := s.mustSetupTemplate("cmd/server/routes/templates/forgotPasswordSuccess.html")
 
-	tplEmailHTML := template.Must(template.ParseFiles("server/templates/forgotPasswordEmail.html"))
-	tplEmailText := template.Must(template.ParseFiles("server/templates/forgotPasswordEmail.text"))
+	tplEmailHTML := template.Must(template.ParseFiles("cmd/server/routes/templates/forgotPasswordEmail.html"))
+	tplEmailText := template.Must(template.ParseFiles("cmd/server/routes/templates/forgotPasswordEmail.text"))
 
 	sendResetLink := func(email string) error {
 		if len(email) == 0 {
@@ -77,7 +77,7 @@ func (s *Server) handleForgotPasswordSubmit() http.HandlerFunc {
 		fmt.Println(textMsg)
 		fmt.Println(htmlMsg)
 
-		err = sendEmail(s.logger, existingUser.Name, existingUser.Email, textMsg, htmlMsg)
+		err = sendEmail(existingUser.Name, existingUser.Email, textMsg, htmlMsg)
 		if err != nil {
 			return err
 		}
