@@ -4,7 +4,7 @@
 
 # "Mini" web application
 
-A small web application used for POC and skeleton for new project.
+A small web application used to skeleton a new project.
 
 ## Features
 
