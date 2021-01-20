@@ -1,6 +1,7 @@
 SHELL := bash
 
 export BUILD_VERSION := $(shell date -u +'%Y-%m-%dT%H.%M.%SZ')
+export GO_PATH := $(shell go env GOPATH)
 
 
 ########################################
@@ -33,7 +34,7 @@ package: build
 ########################################
 .PHONY: dev
 dev:
-	gin  --port 4000 --appPort 4001 --immediate --build . --buildArgs "-v" --all run
+	$(GO_PATH)/bin/modd
 
 ########################################
 .PHONY: test

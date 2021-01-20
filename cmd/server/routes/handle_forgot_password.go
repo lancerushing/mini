@@ -2,7 +2,7 @@ package routes
 
 import (
 	"bytes"
-	 _ "embed"
+	_ "embed"
 	"encoding/base64"
 	"fmt"
 	"html/template"
