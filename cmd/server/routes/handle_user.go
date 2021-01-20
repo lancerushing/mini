@@ -8,7 +8,7 @@ import (
 
 func (s *Server) handleUserDetails() http.HandlerFunc {
 
-	tpl := s.mustSetupTemplate("cmd/server/routes/templates/user-details.html")
+	tpl := s.mustSetupTemplate("templates/user-details.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
 

@@ -1,8 +1,11 @@
 package routes
 
 import (
+	"embed"
+	_ "embed"
+	"github.com/rs/zerolog/log"
 	"html/template"
-	"log"
+
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -25,7 +28,6 @@ type Server struct {
 	db          *sqlx.DB
 	loginAuth   *auth
 	pwResetAuth *auth
-
 }
 
 // NewServer builds a new instance of routes
@@ -33,14 +35,19 @@ func NewServer(config *Config) (*Server, error) {
 	var err error
 	s := &Server{}
 
-
 	if err != nil {
 		return nil, err
 	}
 
-
 	s.db = connect(config)
-	s.layout = template.Must(template.ParseFiles("cmd/server/routes/templates/_layout.html"))
+
+	//go:embed templates/_layout.html
+	var templateString string
+
+	s.layout, err = template.New("_layout").Parse(templateString)
+	if err != nil {
+		return nil, err
+	}
 
 	// @todo Make the keys configurable
 	s.loginAuth = newAuth("auth", "this-is-a-test-key-please-fix", "this-is-a-test-key-please-fix")
@@ -51,13 +58,31 @@ func NewServer(config *Config) (*Server, error) {
 	return s, nil
 }
 
-func (s *Server) mustSetupTemplate(fileName string) *template.Template {
-	clone, err := s.layout.Clone()
+//go:embed templates/*
+var tmplFS embed.FS
+
+func getContents(path string) []byte {
+	data, err := tmplFS.ReadFile(path)
 	if err != nil {
-		log.Fatal("Could not clone layout template: " + err.Error())
+		log.Fatal().Err(err).Msg("could not find embedded file")
 	}
 
-	return template.Must(clone.ParseFiles(fileName))
+	return data
+}
+
+func (s *Server) mustSetupTemplate(path string) *template.Template {
+
+	clone, err := s.layout.Clone()
+	if err != nil {
+		log.Fatal().Msg("could not clone layout template: " + err.Error())
+	}
+
+	t, err := clone.Parse(string(getContents(path)))
+	if err != nil {
+		log.Fatal().Err(err).Msg("could not parse content")
+	}
+
+	return t
 }
 
 // GetHandler provides the Router

@@ -2,6 +2,7 @@ package routes
 
 import (
 	"bytes"
+	 _ "embed"
 	"encoding/base64"
 	"fmt"
 	"html/template"
@@ -14,7 +15,7 @@ import (
 
 func (s *Server) handleForgotPasswordForm() http.HandlerFunc {
 
-	tpl := s.mustSetupTemplate("cmd/server/routes/templates/forgotPasswordForm.html")
+	tpl := s.mustSetupTemplate("templates/forgotPasswordForm.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -30,10 +31,16 @@ func (s *Server) handleForgotPasswordForm() http.HandlerFunc {
 // ################### Submit ###################
 
 func (s *Server) handleForgotPasswordSubmit() http.HandlerFunc {
-	tplSuccess := s.mustSetupTemplate("cmd/server/routes/templates/forgotPasswordSuccess.html")
+	tplSuccess := s.mustSetupTemplate("templates/forgotPasswordSuccess.html")
 
-	tplEmailHTML := template.Must(template.ParseFiles("cmd/server/routes/templates/forgotPasswordEmail.html"))
-	tplEmailText := template.Must(template.ParseFiles("cmd/server/routes/templates/forgotPasswordEmail.text"))
+	//go:embed templates/forgotPasswordEmail.html
+	var emailHTML string
+
+	//go:embed templates/forgotPasswordEmail.text
+	var emailText string
+
+	tplEmailHTML := template.Must(template.New("html").Parse(emailHTML))
+	tplEmailText := template.Must(template.New("text").Parse(emailText))
 
 	sendResetLink := func(email string) error {
 		if len(email) == 0 {

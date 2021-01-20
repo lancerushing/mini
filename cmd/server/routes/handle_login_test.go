@@ -107,7 +107,6 @@ func TestHandleLoginSubmit_BadInput(t *testing.T) {
 func setupWithMock(t *testing.T) (*Server, sqlmock.Sqlmock) {
 	testSrv := Server{}
 
-
 	testSrv.layout = template.Must(template.New("test_layout").Parse(`{{ block "main" . }}test layout main{{ end }}s`))
 	testSrv.routes()
 	testSrv.loginAuth = newAuth("test-auth", "abcdefghijklmnopqrstuvwx", "abcdefghijklmnopqrstuvwx")

@@ -6,7 +6,6 @@ import (
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq" // import DB into namesapce
 	"github.com/rs/zerolog/log"
-
 )
 
 func connect(config *Config) *sqlx.DB {

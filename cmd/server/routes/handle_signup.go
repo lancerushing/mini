@@ -11,7 +11,7 @@ import (
 
 func (s *Server) handleSignupForm() http.HandlerFunc {
 
-	tpl := s.mustSetupTemplate("cmd/server/routes/templates/signupForm.html")
+	tpl := s.mustSetupTemplate("templates/signupForm.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := map[string]interface{}{
@@ -30,7 +30,7 @@ func (s *Server) handleSignupForm() http.HandlerFunc {
 
 func (s *Server) handleSignupSubmit() http.HandlerFunc {
 
-	tplSuccess := s.mustSetupTemplate("cmd/server/routes/templates/signupSuccess.html")
+	tplSuccess := s.mustSetupTemplate("templates/signupSuccess.html")
 
 	saveUser := func(userDto *UserDto) error {
 
