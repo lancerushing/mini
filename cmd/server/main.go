@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/gorilla/csrf"
-	"github.com/lancerushing/mini/lib/logutil"
-	"github.com/rs/zerolog/log"
-	"github.com/spf13/viper"
 	"net/http"
 	"os"
 
+	"github.com/gorilla/csrf"
 	"github.com/lancerushing/mini/cmd/server/routes"
+	"github.com/lancerushing/mini/lib/logutil"
+	"github.com/rs/zerolog/log"
+	"github.com/spf13/viper"
 )
 
 func main() {
@@ -21,17 +21,19 @@ func main() {
 
 func run() error {
 	logutil.Configure()
-	
+
 	// @todo How to handle configs?  Yaml? ENV??
 	viper.SetConfigName("mini")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
+
 	err := viper.ReadInConfig()
 	if err != nil {
 		return err
 	}
 
 	var config routes.Config
+
 	err = viper.Unmarshal(&config)
 	if err != nil {
 		return err
@@ -47,8 +49,8 @@ func run() error {
 	log.Info().Msg("starting server on: http://" + addr)
 	// @todo Make the keys configurable
 	CSRF := csrf.Protect([]byte("01234567890123456789012345678912"), csrf.Secure(false), csrf.Path("/"))
-	return http.ListenAndServe(addr, CSRF(s.GetHandler()))
 
+	return http.ListenAndServe(addr, CSRF(s.GetHandler()))
 }
 
 func getAddress() string {

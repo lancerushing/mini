@@ -26,7 +26,6 @@ func newAuth(name string, cookieHashKey string, cookieEncryptKey string) *auth {
 }
 
 func (a *auth) setCookie(w http.ResponseWriter, uuid string) error {
-
 	value := map[string]string{
 		"uuid": uuid,
 	}
@@ -61,13 +60,11 @@ func (a *auth) deleteCooke(w http.ResponseWriter) {
 }
 
 func (a *auth) middleware(next http.Handler) http.Handler {
-
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-
 		cookie, err := r.Cookie(a.cookieName)
-
 		if err != nil { // no cookie
 			http.Redirect(w, r, "/", http.StatusSeeOther)
+
 			return
 		}
 
@@ -75,12 +72,14 @@ func (a *auth) middleware(next http.Handler) http.Handler {
 		if err = a.sc.Decode(a.cookieName, cookie.Value, &value); err != nil { // bad cookie
 			a.deleteCooke(w)
 			http.Redirect(w, r, "/", http.StatusSeeOther)
+
 			return
 		}
 
 		if len(value["uuid"]) == 0 { // empty value
 			a.deleteCooke(w)
 			http.Redirect(w, r, "/", http.StatusSeeOther)
+
 			return
 		}
 
@@ -89,6 +88,5 @@ func (a *auth) middleware(next http.Handler) http.Handler {
 		ctx = context.WithValue(ctx, a.ctxKey, value["uuid"])
 
 		next.ServeHTTP(w, r.WithContext(ctx))
-
 	})
 }

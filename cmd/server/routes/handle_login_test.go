@@ -28,7 +28,6 @@ func TestHandleLoginForm(t *testing.T) {
 	check.Equal(w.Code, http.StatusOK)
 
 	check.True(strings.Contains(w.Body.String(), "Login"))
-
 }
 
 func TestHandleLoginSubmit_NoInput(t *testing.T) {
@@ -45,8 +44,8 @@ func TestHandleLoginSubmit_NoInput(t *testing.T) {
 	check.Equal(w.Code, http.StatusBadRequest)
 
 	check.True(strings.Contains(w.Body.String(), "missing form body"))
-
 }
+
 func TestHandleLoginSubmit_EmptyInput(t *testing.T) {
 	srv := setup(t)
 
@@ -67,7 +66,6 @@ func TestHandleLoginSubmit_EmptyInput(t *testing.T) {
 
 	check.True(strings.Contains(actualBody, "Email is empty"))
 	check.True(strings.Contains(actualBody, "Password is empty"))
-
 }
 
 func TestHandleLoginSubmit_BadInput(t *testing.T) {
@@ -100,11 +98,13 @@ func TestHandleLoginSubmit_BadInput(t *testing.T) {
 	if !ok {
 		t.Log(actualBody)
 	}
-	check.True(ok)
 
+	check.True(ok)
 }
 
 func setupWithMock(t *testing.T) (*Server, sqlmock.Sqlmock) {
+	t.Helper()
+
 	testSrv := Server{}
 
 	testSrv.layout = template.Must(template.New("test_layout").Parse(`{{ block "main" . }}test layout main{{ end }}s`))
@@ -115,7 +115,7 @@ func setupWithMock(t *testing.T) (*Server, sqlmock.Sqlmock) {
 	if err != nil {
 		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
 	}
-	//defer db.Close()
+	// defer db.Close()
 
 	testSrv.db = sqlx.NewDb(db, "postgres")
 
@@ -150,7 +150,6 @@ func TestHandleLoginSubmit_BadPasswordInput(t *testing.T) {
 	actualBody := w.Body.String()
 
 	check.True(strings.Contains(actualBody, "Bad Password"))
-
 }
 
 func TestHandleLoginSubmit_GoodInput(t *testing.T) {
@@ -184,5 +183,4 @@ func TestHandleLoginSubmit_GoodInput(t *testing.T) {
 	actualLocation := w.Header().Get("Location")
 
 	check.Equal(actualLocation, "/user/")
-
 }

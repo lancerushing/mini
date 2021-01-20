@@ -10,7 +10,6 @@ import (
 )
 
 func TestToken_Good(t *testing.T) {
-
 	t.Parallel()
 	check := is.New(t)
 
@@ -22,11 +21,9 @@ func TestToken_Good(t *testing.T) {
 	check.NoErr(err)
 
 	check.Equal(testMsg, msg)
-
 }
 
 func TestToken_Bad(t *testing.T) {
-
 	t.Parallel()
 	check := is.New(t)
 
@@ -42,11 +39,9 @@ func TestToken_Bad(t *testing.T) {
 	} else {
 		check.Equal("token is invalid", err.Error())
 	}
-
 }
 
 func TestToken_Expired(t *testing.T) {
-
 	t.Parallel()
 	check := is.New(t)
 
@@ -71,5 +66,4 @@ func TestToken_Expired(t *testing.T) {
 	} else {
 		check.Equal("token is expired", err.Error())
 	}
-
 }

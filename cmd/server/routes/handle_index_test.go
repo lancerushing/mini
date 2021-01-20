@@ -23,5 +23,4 @@ func TestHandleIndex(t *testing.T) {
 	is.Equal(w.Code, http.StatusOK)
 
 	is.True(strings.Contains(w.Body.String(), "Welcome"))
-
 }

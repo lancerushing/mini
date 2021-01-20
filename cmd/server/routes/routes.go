@@ -38,19 +38,13 @@ func (s *Server) addAnonRoutes() {
 }
 
 func (s *Server) resetPasswordRoutes(mux chi.Router) {
-
 	mux.Use(s.pwResetAuth.middleware)
-
 	mux.Get("/user/reset-password/", s.handleRestPasswordForm())
 	mux.Post("/user/reset-password/", s.handleRestPasswordSubmit())
-
 }
 
 func (s *Server) authRoutes(mux chi.Router) {
-
 	mux.Use(s.loginAuth.middleware)
-
 	mux.Get("/user/", s.handleUserDetails())
 	mux.Post("/user/logout/", s.handleLogout())
-
 }

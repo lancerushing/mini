@@ -10,8 +10,13 @@ import (
 // Configure zerolog.
 func Configure() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+
 	if os.Getenv("GAE_ENV") != "" {
-		log.Logger = log.With().Logger().Level(zerolog.InfoLevel).Hook(AddStackDriverSeverity{}).Hook(StackDriverSourceLocation).Output(os.Stdout)
+		log.Logger = log.With().Logger().
+			Level(zerolog.InfoLevel).
+			Hook(AddStackDriverSeverity{}).
+			Hook(StackDriverSourceLocation).
+			Output(os.Stdout)
 	} else {
 		log.Logger = log.With().Caller().Logger().Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	}

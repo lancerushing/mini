@@ -4,15 +4,16 @@ import (
 	"fmt"
 
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq" // import DB into namesapce
+
+	// import DB into namespace.
+	_ "github.com/lib/pq"
 	"github.com/rs/zerolog/log"
 )
 
 func connect(config *Config) *sqlx.DB {
-
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s",
-		config.PgHost, config.PgPort, config.PgUsername, config.PgPassword, config.PgDb)
+		config.PgHost, config.PgPort, config.PgUsername, config.PgPassword, config.PgDB)
 
 	db := sqlx.MustConnect("postgres", psqlInfo)
 
@@ -28,7 +29,6 @@ func (s Server) getUser(uuid string) (*UserDto, error) {
 	}
 
 	return &result, nil
-
 }
 
 func (s Server) getByEmail(email string) *UserDto {
@@ -37,17 +37,18 @@ func (s Server) getByEmail(email string) *UserDto {
 	err := s.db.Select(&result, "SELECT uuid, email, password FROM users WHERE email = $1", email)
 	if err != nil {
 		log.Error().Err(err).Msg("Bad Query")
+
 		return nil
 	}
 
 	if len(result) != 1 {
 		return nil
 	}
-	return &result[0]
 
+	return &result[0]
 }
 
-// UserDto holds info from DB
+// UserDto holds info from DB.
 type UserDto struct {
 	UUID     string
 	Email    string

@@ -7,12 +7,15 @@ import (
 	"testing"
 )
 
-var _testOneTime sync.Once
-var _testSrv Server
+var (
+	_testOneTime sync.Once
+	_testSrv     Server
+)
 
 func setup(t *testing.T) *Server {
-	_testOneTime.Do(func() {
+	t.Helper()
 
+	_testOneTime.Do(func() {
 		// @todo is there a better way?
 		// When running tests, the working dir is the package dir
 		// templates parsing uses paths based on the root dir
@@ -26,11 +29,9 @@ func setup(t *testing.T) *Server {
 
 		_testSrv.layout = template.Must(template.New("test_layout").Parse(`{{ block "main" . }}test layout main{{ end }}s`))
 		_testSrv.routes()
-
 	})
 
 	t.Parallel()
 
 	return &_testSrv
-
 }

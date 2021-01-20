@@ -10,7 +10,6 @@ import (
 )
 
 func (s *Server) handleSignupForm() http.HandlerFunc {
-
 	tpl := s.mustSetupTemplate("templates/signupForm.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -19,7 +18,6 @@ func (s *Server) handleSignupForm() http.HandlerFunc {
 		}
 
 		err := tpl.Execute(w, data)
-
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
@@ -29,11 +27,9 @@ func (s *Server) handleSignupForm() http.HandlerFunc {
 // ################### Submit ###################
 
 func (s *Server) handleSignupSubmit() http.HandlerFunc {
-
 	tplSuccess := s.mustSetupTemplate("templates/signupSuccess.html")
 
 	saveUser := func(userDto *UserDto) error {
-
 		sql := `INSERT INTO users (uuid, name, email, password) VALUES (:uuid, :name, :email, :password)`
 
 		_, err := s.db.NamedExec(sql, &userDto)
@@ -45,9 +41,11 @@ func (s *Server) handleSignupSubmit() http.HandlerFunc {
 		if len(name) == 0 {
 			return nil, errors.Errorf("Name is empty")
 		}
+
 		if len(email) == 0 {
 			return nil, errors.Errorf("Email is empty")
 		}
+
 		if len(password) == 0 {
 			return nil, errors.Errorf("Password is empty")
 		}
@@ -72,14 +70,13 @@ func (s *Server) handleSignupSubmit() http.HandlerFunc {
 		}
 
 		return user, nil
-
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		err := r.ParseForm()
 		if err != nil {
 			http.Error(w, "Unable to parse: "+err.Error(), http.StatusInternalServerError)
+
 			return
 		}
 
@@ -90,6 +87,7 @@ func (s *Server) handleSignupSubmit() http.HandlerFunc {
 		userDto, err := createUser(name, email, password)
 		if err != nil {
 			http.Error(w, "Unable to create: "+err.Error(), http.StatusInternalServerError)
+
 			return
 		}
 

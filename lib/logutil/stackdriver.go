@@ -58,11 +58,12 @@ func (ch sdSourceLocation) Run(e *zerolog.Event, level zerolog.Level, msg string
 
 	if !ok {
 		log.Print("no caller")
+
 		return
 	}
 
 	if strings.Contains(file, "github.com/jackc/pgx/v4/log/zerologadapter/adapter.go") {
-		pc, file, line, ok = runtime.Caller(ch.callerSkipFrameCount + 1)
+		pc, file, line, _ = runtime.Caller(ch.callerSkipFrameCount + 1)
 	}
 
 	details := runtime.FuncForPC(pc)
@@ -71,9 +72,11 @@ func (ch sdSourceLocation) Run(e *zerolog.Event, level zerolog.Level, msg string
 		Function: details.Name(),
 		Line:     int64(line),
 	}
+
 	b, err := json.Marshal(s)
 	if err != nil {
 		log.Print(err)
+
 		return
 	}
 

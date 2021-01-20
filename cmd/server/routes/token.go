@@ -37,7 +37,6 @@ func computeSum(salt []byte, expires []byte, message []byte) ([]byte, error) {
 }
 
 func tokenExtractMessage(token []byte) ([]byte, error) {
-
 	sumStart := len(token) - sumBytes
 
 	extractedSalt := token[0:saltBytes]
@@ -50,12 +49,14 @@ func tokenExtractMessage(token []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if !hmac.Equal(extractedSum, computedSum) {
 		return nil, errors.New("token is invalid")
 	}
 
 	// verify  expiration
 	var expires time.Time
+
 	err = expires.UnmarshalBinary(extractedExpires)
 	if err != nil {
 		return nil, err
@@ -69,7 +70,6 @@ func tokenExtractMessage(token []byte) ([]byte, error) {
 }
 
 func tokenCreate(message []byte) ([]byte, error) {
-
 	salt := make([]byte, saltBytes)
 	if _, err := rand.Read(salt); err != nil {
 		return nil, err
@@ -92,5 +92,4 @@ func tokenCreate(message []byte) ([]byte, error) {
 	result.Write(sum)
 
 	return result.Bytes(), nil
-
 }

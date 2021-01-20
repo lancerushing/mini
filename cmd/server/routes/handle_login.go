@@ -9,7 +9,6 @@ import (
 )
 
 func (s *Server) handleLoginForm() http.HandlerFunc {
-
 	tpl := s.mustSetupTemplate("templates/loginForm.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -18,18 +17,15 @@ func (s *Server) handleLoginForm() http.HandlerFunc {
 		}
 
 		err := tpl.Execute(w, data)
-
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
-
 }
 
 // ################### Submit ###################
 
 func (s *Server) handleLoginSubmit() http.HandlerFunc {
-
 	return func(w http.ResponseWriter, r *http.Request) {
 		var (
 			user *UserDto
@@ -39,6 +35,7 @@ func (s *Server) handleLoginSubmit() http.HandlerFunc {
 		err = r.ParseForm()
 		if err != nil {
 			http.Error(w, "unable to parse: "+err.Error(), http.StatusBadRequest)
+
 			return
 		}
 
@@ -50,12 +47,12 @@ func (s *Server) handleLoginSubmit() http.HandlerFunc {
 		if len(email) == 0 {
 			fieldErrors["emailError"] = "Email is empty"
 		}
+
 		if len(password) == 0 {
 			fieldErrors["passwordError"] = "Password is empty"
 		}
 
 		if len(fieldErrors) == 0 {
-
 			userMatch := s.getByEmail(email)
 			if userMatch == nil {
 				fieldErrors["emailError"] = "Email not found"
@@ -72,7 +69,6 @@ func (s *Server) handleLoginSubmit() http.HandlerFunc {
 		}
 
 		if user == nil {
-
 			tpl := s.mustSetupTemplate("templates/loginForm.html")
 			data := map[string]interface{}{
 				csrf.TemplateTag: csrf.TemplateField(r),
@@ -80,6 +76,7 @@ func (s *Server) handleLoginSubmit() http.HandlerFunc {
 				"email":          email,
 				"password":       password,
 			}
+
 			for k, v := range fieldErrors {
 				data[k] = v
 			}
@@ -90,13 +87,17 @@ func (s *Server) handleLoginSubmit() http.HandlerFunc {
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
+
 			return
 		}
 
 		err = s.loginAuth.setCookie(w, user.UUID)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+
+			return
 		}
+
 		http.Redirect(w, r, "/user/", http.StatusSeeOther)
 	}
 }
@@ -104,10 +105,8 @@ func (s *Server) handleLoginSubmit() http.HandlerFunc {
 // ################### Logout ###################
 
 func (s *Server) handleLogout() http.HandlerFunc {
-
 	return func(w http.ResponseWriter, r *http.Request) {
 		s.loginAuth.deleteCooke(w)
 		http.Redirect(w, r, "../", http.StatusSeeOther)
 	}
-
 }

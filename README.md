@@ -21,6 +21,14 @@ A small web application used to skeleton a new project.
 ## Development
 
 ```bash
+go get github.com/cortesi/modd/cmd/modd
+go get golang.org/x/lint/golint
+
+curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.35.2
+```
+
+
+```bash
 make create-db  # first time only
 
 # optional for dev, if you want email to work

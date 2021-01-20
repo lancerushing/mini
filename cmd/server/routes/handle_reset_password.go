@@ -10,38 +10,33 @@ import (
 )
 
 func (s *Server) handleRestPasswordForm() http.HandlerFunc {
-
 	tpl := s.mustSetupTemplate("templates/resetPasswordForm.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		data := map[string]interface{}{
 			csrf.TemplateTag: csrf.TemplateField(r),
 		}
 		err := tpl.Execute(w, data)
-
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-
 	}
-
 }
 
 // ################### Submit ###################
 
 func (s *Server) handleRestPasswordSubmit() http.HandlerFunc {
-
 	tplFail := s.mustSetupTemplate("templates/resetPasswordForm.html")
 	tplSuccess := s.mustSetupTemplate("templates/resetPasswordSuccess.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		err := r.ParseForm()
 		if err != nil {
 			http.Error(w, "Unable to parse: "+err.Error(), http.StatusInternalServerError)
+
 			return
 		}
+
 		pass1 := r.FormValue("password")
 		pass2 := r.FormValue("password2")
 
@@ -50,12 +45,13 @@ func (s *Server) handleRestPasswordSubmit() http.HandlerFunc {
 				csrf.TemplateTag: csrf.TemplateField(r),
 				"errorMsg":       "Passwords do not match.",
 			}
+
 			w.WriteHeader(http.StatusBadRequest)
 			err := tplFail.Execute(w, data)
-
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
+
 			return
 		}
 
@@ -74,12 +70,14 @@ func (s *Server) handleRestPasswordSubmit() http.HandlerFunc {
 				csrf.TemplateTag: csrf.TemplateField(r),
 				"errorMsg":       err.Error(),
 			}
+
 			w.WriteHeader(http.StatusBadRequest)
 			err = tplFail.Execute(w, data)
 
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
+
 			return
 		}
 
@@ -90,15 +88,12 @@ func (s *Server) handleRestPasswordSubmit() http.HandlerFunc {
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
-
 	}
-
 }
 
 // ################### Verify incoming token ###################
 
 func (s *Server) handleResetPasswordVerify() http.HandlerFunc {
-
 	tplFail := s.mustSetupTemplate("templates/resetPasswordVerifyFail.html")
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -108,11 +103,14 @@ func (s *Server) handleResetPasswordVerify() http.HandlerFunc {
 
 		if !ok || len(tokens[0]) < 1 {
 			data["errorMsg"] = "Token is missing"
+
 			w.WriteHeader(http.StatusBadRequest)
+
 			err := tplFail.Execute(w, data)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
+
 			return
 		}
 
@@ -121,49 +119,59 @@ func (s *Server) handleResetPasswordVerify() http.HandlerFunc {
 		tokenBytes, err := base64.URLEncoding.DecodeString(token)
 		if err != nil {
 			data["errorMsg"] = "Token will not decode"
+
 			w.WriteHeader(http.StatusBadRequest)
+
 			err := tplFail.Execute(w, data)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
+
 			return
 		}
 
 		userUUID, err := tokenExtractMessage(tokenBytes)
 		if err != nil {
 			data["errorMsg"] = err.Error()
+
 			w.WriteHeader(http.StatusBadRequest)
+
 			err := tplFail.Execute(w, data)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
+
 			return
 		}
 
 		uuidString, err := uuid.FromBytes(userUUID)
 		if err != nil {
 			data["errorMsg"] = err.Error()
+
 			w.WriteHeader(http.StatusBadRequest)
+
 			err := tplFail.Execute(w, data)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
+
 			return
 		}
 
 		err = s.pwResetAuth.setCookie(w, uuidString.String())
 		if err != nil {
 			data["errorMsg"] = err.Error()
+
 			w.WriteHeader(http.StatusBadRequest)
+
 			err := tplFail.Execute(w, data)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 			}
+
 			return
 		}
 
 		http.Redirect(w, r, "../", http.StatusSeeOther)
-
 	}
-
 }

@@ -2,26 +2,24 @@ package routes
 
 import (
 	"embed"
-	_ "embed"
-	"github.com/rs/zerolog/log"
 	"html/template"
-
 	"net/http"
 
 	"github.com/go-chi/chi"
 	"github.com/jmoiron/sqlx"
+	"github.com/rs/zerolog/log"
 )
 
-// Config to hold configuration info
+// Config to hold configuration info.
 type Config struct {
 	PgHost     string
 	PgPort     int
-	PgDb       string
+	PgDB       string
 	PgUsername string
 	PgPassword string
 }
 
-// Server provides a HTTPHandler and shared resources
+// Server provides a HTTPHandler and shared resources.
 type Server struct {
 	router      chi.Router
 	layout      *template.Template
@@ -30,14 +28,11 @@ type Server struct {
 	pwResetAuth *auth
 }
 
-// NewServer builds a new instance of routes
+// NewServer builds a new instance of routes.
 func NewServer(config *Config) (*Server, error) {
 	var err error
-	s := &Server{}
 
-	if err != nil {
-		return nil, err
-	}
+	s := &Server{}
 
 	s.db = connect(config)
 
@@ -71,7 +66,6 @@ func getContents(path string) []byte {
 }
 
 func (s *Server) mustSetupTemplate(path string) *template.Template {
-
 	clone, err := s.layout.Clone()
 	if err != nil {
 		log.Fatal().Msg("could not clone layout template: " + err.Error())
@@ -85,7 +79,7 @@ func (s *Server) mustSetupTemplate(path string) *template.Template {
 	return t
 }
 
-// GetHandler provides the Router
+// GetHandler provides the Router.
 func (s *Server) GetHandler() http.Handler {
 	return s.router
 }
